@@ -1,10 +1,14 @@
-using BlogRest.Services;
+using BlogRest.Contexts;
+using BlogRest.Dtos;
+using BlogRest.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddSingleton<IArticleService, TestArticleService>();
+builder.Services.AddSingleton<ArticleConverter>();
+builder.Services.AddSingleton<IArticleContext, TestArticleContext>();
+builder.Services.AddSingleton<IArticleRepository, TestArticleRepository>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -26,3 +30,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+    
