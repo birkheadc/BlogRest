@@ -11,16 +11,16 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /src
-COPY ["Blog.csproj", "./"]
-RUN dotnet restore "Blog.csproj"
+COPY ["BlogRest.csproj", "./"]
+RUN dotnet restore "BlogRest.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Blog.csproj" -c Release -o /app/build
+RUN dotnet build "BlogRest.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Blog.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BlogRest.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Blog.dll"]
+ENTRYPOINT ["dotnet", "BlogRest.dll"]

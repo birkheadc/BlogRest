@@ -1,25 +1,31 @@
-using System.Collections;
-using BlogRest.Entities;
-using BlogRest.Services;
+using BlogRest.Dtos;
+using BlogRest.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
 namespace BlogRest.Controllers;
 
 [ApiController]
 [Route("api/articles")]
 public class ArticleController : ControllerBase
 {
-    private readonly IArticleService articleService;
+    private readonly IArticleRepository repository;
+    // private static readonly HttpClient httpClient = new HttpClient();
 
-    public ArticleController(IArticleService articleService)
+    public ArticleController(IArticleRepository repository)
     {
-        this.articleService = articleService;
+        this.repository = repository;
     }
 
     [HttpGet]
-    public IEnumerable<Article> GetAllArticles()
+    public IEnumerable<ArticleDto> GetAllArticles()
     {
-        IEnumerable<Article> articles = articleService.GetAllArticles();
+        IEnumerable<ArticleDto> articles = repository.GetAllArticles();
         return articles;
+    }
+    
+    [HttpPost]
+    public void PostNewArticle(string title, string subtitle, string body)
+    {
+        //TODO: Some kind of user validation
+        repository.CreateNewArticle(title, subtitle, body);
     }
 }
