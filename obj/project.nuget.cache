@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "dzIWKiR5E+I8OmLHk0P9hE/UZoUbAjZbqWlmX/tyKKx8MEHtrTWGHUD9TKmGQGFTE9rhxHQB44KlfFJAfQLt+Q==",
+  "success": true,
+  "projectFilePath": "/home/colby/dev/blog/BlogRest/BlogRest.csproj",
+  "expectedPackageFiles": [
+    "/home/colby/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/home/colby/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/home/colby/.nuget/packages/swashbuckle.aspnetcore/6.2.3/swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "/home/colby/.nuget/packages/swashbuckle.aspnetcore.swagger/6.2.3/swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "/home/colby/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.2.3/swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "/home/colby/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.2.3/swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
