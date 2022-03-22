@@ -4,14 +4,14 @@ using MySql.Data.MySqlClient;
 
 namespace BlogRest.Contexts;
 
-public class TestArticleContext : IArticleContext
+public class ArticleContext : IArticleContext
 {
     private string connectionString { get; set; }
     
     private const string databaseName = "blog";
     private const string tableName = "articles";
 
-    public TestArticleContext(IConfiguration configuration)
+    public ArticleContext(IConfiguration configuration)
     {
         this.connectionString = configuration.GetConnectionString("DefaultConnection");
         InitializeDatabase();
