@@ -13,7 +13,7 @@ public class ArticleRepository : IArticleRepository
         this.context = context;
     }
 
-    public IEnumerable<Article> GetAll()
+    public IEnumerable<Article> FindAll()
     {
         IEnumerable<Article> articles = context.FindAll();
         return articles;
@@ -22,5 +22,17 @@ public class ArticleRepository : IArticleRepository
     public void Add(Article article)
     {
         context.Add(article);
+    }
+
+    public IEnumerable<ArticleProfileDto> FindAllArticleProfiles()
+    {
+        IEnumerable<ArticleProfileDto> profiles = context.FindAllArticleProfilesByPostDateDesc();
+        return profiles;
+    }
+
+    public Article FindByTitle(string title)
+    {
+        Article article = context.FindByTitle(title);
+        return article;
     }
 }

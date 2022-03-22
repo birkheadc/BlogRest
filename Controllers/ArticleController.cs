@@ -1,4 +1,5 @@
 using BlogRest.Dtos;
+using BlogRest.Models;
 using BlogRest.Repositories;
 using BlogRest.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,14 @@ public class ArticleController : ControllerBase
     {
         IEnumerable<ArticleDto> articles = articleService.GetAllArticles();
         return articles;
+    }
+
+    [HttpGet]
+    [Route("titles")]
+    public IEnumerable<ArticleProfileDto> GetAllArticleProfiles()
+    {
+        IEnumerable<ArticleProfileDto> profiles = articleService.GetAllArticleProfiles();
+        return profiles;
     }
     
     [HttpPost]

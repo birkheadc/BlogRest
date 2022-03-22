@@ -1,3 +1,4 @@
+using BlogRest.Dtos;
 using BlogRest.Models;
 using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
@@ -129,5 +130,53 @@ public class ArticleContext : IArticleContext
 
             connection.Close();
         }
+    }
+
+    public IEnumerable<ArticleProfileDto> FindAllArticleProfilesByPostDateDesc()
+    {
+        List<ArticleProfileDto> profiles = new();
+
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.CommandText = "SELECT title, subtitle, post_date FROM " + tableName + " ORDER BY post_date DESC";
+            command.Connection = connection;
+            Console.WriteLine("SELECT title, subtitle, post_date FROM " + tableName + " ORDER BY post_date DESC");
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    profiles.Add(new ArticleProfileDto()
+                    {
+                        PostDate = DateTimeOffset.Parse(reader["post_date"].ToString() ?? "0"),
+                        Title = reader["title"].ToString() ?? "Title Missing!",
+                        SubTitle = reader["subtitle"].ToString() ?? "SubTitle Missing!",
+                    });
+                }
+            }
+
+            connection.Close();
+        }
+
+
+        //TODO
+
+        return profiles;
+    }
+
+    public Article FindByTitle(string title)
+    {
+        //TODO
+        Article test = new()
+        {
+            Id = Guid.Empty,
+            PostDate = DateTimeOffset.Now,
+            Title = "Title",
+            SubTitle = "Subtitle",
+            Body = "Body"
+        };
+        return test;
     }
 }

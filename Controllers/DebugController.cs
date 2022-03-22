@@ -6,7 +6,6 @@ namespace BlogRest.Controllers;
 [Route("debug")]
 public class DebugController : ControllerBase
 {
-
     private readonly IConfiguration configuration;
 
     public DebugController(IConfiguration configuration)

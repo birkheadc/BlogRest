@@ -43,8 +43,21 @@ public class ArticleService : IArticleService
 
     public IEnumerable<ArticleDto> GetAllArticles()
     {
-        IEnumerable<Article> articles = repository.GetAll();
+        IEnumerable<Article> articles = repository.FindAll();
         IEnumerable<ArticleDto> dtos = converter.EntityToDtoIEnum(articles);
         return dtos;
+    }
+
+    public IEnumerable<ArticleProfileDto> GetAllArticleProfiles()
+    {
+        IEnumerable<ArticleProfileDto> profiles = repository.FindAllArticleProfiles();
+        return profiles;
+    }
+
+    public ArticleDto GetArticleByTitle(string title)
+    {
+        Article article = repository.FindByTitle(title);
+        ArticleDto dto = converter.EntityToDto(article);
+        return dto;
     }
 }
