@@ -37,13 +37,17 @@ public class ArticleContext : IArticleContext
         using (MySqlConnection connection = GetConnection())
         {
             MySqlCommand command = new();
+
             command.Parameters.AddWithValue("@db", databaseName);
             command.Parameters.AddWithValue("@table", tableName);
-            string query = "SELECT COUNT(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA=@db) AND (TABLE_NAME=@table)";
-            command.CommandText = query;
+
+            command.CommandText = "SELECT COUNT(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA=@db) AND (TABLE_NAME=@table)";
+
             command.Connection = connection;
+
             connection.Open();
-            int n = int.Parse(command.ExecuteScalar().ToString() ?? "0");
+
+            int n = GetCountFromScalarCommand(command);
             return n > 0;
         }
     }
@@ -53,11 +57,15 @@ public class ArticleContext : IArticleContext
         using (MySqlConnection connection = GetConnection())
         {
             MySqlCommand command = new();
-            string query = "CREATE TABLE " + tableName + " (id CHAR(36) PRIMARY KEY NOT NULL, post_date TIMESTAMP NOT NULL, title VARCHAR(255) NOT NULL, subtitle VARCHAR(255) NOT NULL, body TEXT NOT NULL)";
-            command.CommandText = query;
+            
+            command.CommandText = "CREATE TABLE " + tableName + " (id CHAR(36) PRIMARY KEY NOT NULL, post_date TIMESTAMP NOT NULL, title VARCHAR(255) NOT NULL, subtitle VARCHAR(255) NOT NULL, body TEXT NOT NULL, UNIQUE (title))";
+            
             command.Connection = connection;
+            
             connection.Open();
+            
             command.ExecuteNonQuery();
+            
             connection.Close();
         }
     }
@@ -68,48 +76,55 @@ public class ArticleContext : IArticleContext
 
         using (MySqlConnection connection = GetConnection())
         {
-            try
+            connection.Open();
+
+            MySqlCommand command = new();
+
+            command.CommandText = "SELECT * FROM " + tableName;
+
+            command.Connection = connection;
+
+            using (MySqlDataReader reader = command.ExecuteReader())
             {
-                connection.Open();
-                MySqlCommand command = new();
-                command.CommandText = "SELECT * FROM " + tableName;
-                command.Connection = connection;
-                using (MySqlDataReader reader = command.ExecuteReader())
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        articles.Add(new Article()
-                        {
-                            Id = Guid.Parse(reader["id"].ToString() ?? Guid.Empty.ToString()),
-                            PostDate = DateTimeOffset.Parse(reader["post_date"].ToString() ?? "0"),
-                            Title = reader["title"].ToString() ?? "Title Missing!",
-                            SubTitle = reader["subtitle"].ToString() ?? "SubTitle Missing!",
-                            Body = reader["body"].ToString() ?? "Body Missing"
-                        });
-                    }
+                    Article article = GetArticleFromReader(reader);
+                    articles.Add(article);
                 }
-                connection.Close();
             }
-            catch
-            {
-                Article article = new()
-                {
-                    Id = Guid.Empty,
-                    PostDate = DateTimeOffset.Now,
-                    Title = "Error",
-                    SubTitle = "One or more errors",
-                    Body = connectionString
-                };
-                articles.Add(article);
-                return articles;
-            }
-            
+
+            connection.Close();
         }
+
         return articles;
     }
 
-    public void Add(Article article)
+    public bool DoesArticleExistByTitle(string title)
     {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+
+            command.Parameters.AddWithValue("@title", title);
+
+            command.CommandText = "SELECT COUNT(title) FROM " + tableName + " WHERE title=@title";
+
+            int n = GetCountFromScalarCommand(command);
+            connection.Close();
+            return n > 0;
+        }
+    }
+
+    public bool Add(Article article)
+    {
+        // Title is a unique field, so check if an article of the same title already exists.
+        if (DoesArticleExistByTitle(article.Title) == true)
+        {
+            return false;
+        }
+        
         using (MySqlConnection connection = GetConnection())
         {
             connection.Open();
@@ -130,6 +145,8 @@ public class ArticleContext : IArticleContext
 
             connection.Close();
         }
+
+        return true;
     }
 
     public IEnumerable<ArticleProfileDto> FindAllArticleProfilesByPostDateDesc()
@@ -148,35 +165,73 @@ public class ArticleContext : IArticleContext
             {
                 while (reader.Read())
                 {
-                    profiles.Add(new ArticleProfileDto()
-                    {
-                        PostDate = DateTimeOffset.Parse(reader["post_date"].ToString() ?? "0"),
-                        Title = reader["title"].ToString() ?? "Title Missing!",
-                        SubTitle = reader["subtitle"].ToString() ?? "SubTitle Missing!",
-                    });
+                    profiles.Add(GetArticleProfileFromReader(reader));
                 }
             }
 
             connection.Close();
         }
 
-
-        //TODO
-
         return profiles;
     }
 
     public Article FindByTitle(string title)
     {
-        //TODO
-        Article test = new()
+        Article article;
+
+        using (MySqlConnection connection = GetConnection())
         {
-            Id = Guid.Empty,
-            PostDate = DateTimeOffset.Now,
-            Title = "Title",
-            SubTitle = "Subtitle",
-            Body = "Body"
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Parameters.AddWithValue("@title", title);
+            command.CommandText = "SELECT * FROM " + tableName + " WHERE title = @title LIMIT 1";
+            command.Connection = connection;
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read() == false)
+                {
+                    connection.Close();
+                    return null;
+                }
+                article = GetArticleFromReader(reader);
+            }
+
+            connection.Close();
+        }
+
+        return article;
+    }
+
+    private Article GetArticleFromReader(MySqlDataReader reader)
+    {
+        Article article = new()
+        {
+            Id = Guid.Parse(reader["id"].ToString() ?? Guid.Empty.ToString()),
+            PostDate = DateTimeOffset.Parse(reader["post_date"].ToString() ?? "0"),
+            Title = reader["title"].ToString() ?? "Title Missing!",
+            SubTitle = reader["subtitle"].ToString() ?? "SubTitle Missing!",
+            Body = reader["body"].ToString() ?? "Body Missing"
         };
-        return test;
+        
+        return article;
+    }
+
+    private ArticleProfileDto GetArticleProfileFromReader(MySqlDataReader reader)
+    {
+        ArticleProfileDto profile = new()
+        {
+            PostDateUnixTimeSeconds = DateTimeOffset.Parse(reader["post_date"].ToString() ?? "0").ToUnixTimeSeconds(),
+            Title = reader["title"].ToString() ?? "Title Missing!",
+            SubTitle = reader["subtitle"].ToString() ?? "SubTitle Missing!",
+        };
+
+        return profile;
+    }
+
+    private int GetCountFromScalarCommand(MySqlCommand command)
+    {
+        return int.Parse(command.ExecuteScalar().ToString() ?? "0");
     }
 }

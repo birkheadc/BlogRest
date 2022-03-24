@@ -1,6 +1,7 @@
 using BlogRest.Dtos;
 using BlogRest.Models;
 using BlogRest.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogRest.Services;
 
@@ -57,6 +58,10 @@ public class ArticleService : IArticleService
     public ArticleDto GetArticleByTitle(string title)
     {
         Article article = repository.FindByTitle(title);
+        if (article == null)
+        {
+            return null;
+        }
         ArticleDto dto = converter.EntityToDto(article);
         return dto;
     }

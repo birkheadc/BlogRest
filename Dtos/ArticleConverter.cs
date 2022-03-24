@@ -9,7 +9,7 @@ public class ArticleConverter
         Article entity = new()
         {
             Id = dto.Id,
-            PostDate = dto.PostDate,
+            PostDate = DateTimeOffset.FromUnixTimeSeconds(dto.PostDateUnixTimeSeconds),
             Title = dto.Title,
             SubTitle = dto.SubTitle,
             Body = dto.Body
@@ -17,12 +17,16 @@ public class ArticleConverter
         return entity;
     }
 
-    public ArticleDto EntityToDto(Article entity)
+    public ArticleDto? EntityToDto(Article? entity)
     {
+        if (entity == null)
+        {
+            return null;
+        }
         ArticleDto dto = new()
         {
             Id = entity.Id,
-            PostDate = entity.PostDate,
+            PostDateUnixTimeSeconds = entity.PostDate.ToUnixTimeSeconds(),
             Title = entity.Title,
             SubTitle = entity.SubTitle,
             Body = entity.Body

@@ -18,24 +18,37 @@ public class ArticleController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<ArticleDto> GetAllArticles()
+    public IActionResult GetAllArticles()
     {
         IEnumerable<ArticleDto> articles = articleService.GetAllArticles();
-        return articles;
+        return Ok(articles);
     }
 
     [HttpGet]
-    [Route("titles")]
-    public IEnumerable<ArticleProfileDto> GetAllArticleProfiles()
+    [Route("title/{title}")]
+    public IActionResult GetArticleByTitle(string title)
+    {
+        ArticleDto article = articleService.GetArticleByTitle(title);
+        if (article == null)
+        {
+            return NotFound();
+        }
+        return Ok(article);
+    }
+
+    [HttpGet]
+    [Route("profiles")]
+    public IActionResult GetAllArticleProfiles()
     {
         IEnumerable<ArticleProfileDto> profiles = articleService.GetAllArticleProfiles();
-        return profiles;
+        return Ok(profiles);
     }
     
     [HttpPost]
-    public void PostNewArticle(string title, string subtitle, string body)
+    public IActionResult PostNewArticle(string title, string subtitle, string body)
     {
         //TODO: This method does nothing atm. Need to introduce some kind of validation system.
         articleService.CreateNewArticle(title, subtitle, body);
+        return StatusCode(403);
     }
 }
