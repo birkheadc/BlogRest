@@ -111,6 +111,8 @@ public class ArticleContext : IArticleContext
 
             command.CommandText = "SELECT COUNT(title) FROM " + tableName + " WHERE title=@title";
 
+            command.Connection = connection;
+
             int n = GetCountFromScalarCommand(command);
             connection.Close();
             return n > 0;
