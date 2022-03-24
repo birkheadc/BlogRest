@@ -13,4 +13,6 @@ public interface IArticleService
     public void CreateNewArticle(Article article);
 
     public ArticleDto GetArticleByTitle(string title);
+
+    public void CreateTestArticles();
 }

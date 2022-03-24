@@ -51,4 +51,12 @@ public class ArticleController : ControllerBase
         articleService.CreateNewArticle(title, subtitle, body);
         return StatusCode(403);
     }
+
+    [HttpPost]
+    [Route("test")]
+    public IActionResult AddTestArticles()
+    {
+        articleService.CreateTestArticles();
+        return Ok();
+    }
 }
