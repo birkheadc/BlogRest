@@ -1,8 +1,8 @@
 namespace BlogRest.Dtos;
 
-public record ArticleProfileDto
+public record InboundArticleDto
 {
-    public long PostDateUnixTimeSeconds { get; init; }
     public string Title { get; init; } = "";
     public string SubTitle { get; init; } = "";
+    public string Body { get; init; } = "";
 }

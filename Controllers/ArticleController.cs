@@ -45,11 +45,11 @@ public class ArticleController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult PostNewArticle(string title, string subtitle, string body)
+    public IActionResult PostNewArticle([FromBody] InboundArticleDto inboundArticleDto)
     {
-        //TODO: This method does nothing atm. Need to introduce some kind of validation system.
-        articleService.CreateNewArticle(title, subtitle, body);
-        return StatusCode(403);
+        //TODO: Need to introduce some kind of validation system.
+        articleService.CreateNewArticle(inboundArticleDto);
+        return Ok();
     }
 
     [HttpPost]
@@ -58,5 +58,12 @@ public class ArticleController : ControllerBase
     {
         articleService.CreateTestArticles();
         return Ok();
+    }
+
+    [HttpPost]
+    [Route("debug")]
+    public IActionResult Debug([FromBody] InboundArticleDto inboundArticleDto)
+    {
+        return Ok(inboundArticleDto);
     }
 }

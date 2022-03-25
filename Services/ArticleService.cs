@@ -38,8 +38,13 @@ public class ArticleService : IArticleService
 
     public void CreateNewArticle(Article article)
     {
-        //TODO: Use some kind of validation. For now, creating articles should be done directly to the database.
-        //repository.Add(article);
+        //TODO: Use some kind of validation.
+        repository.Add(article);
+    }
+
+    public void CreateNewArticle(InboundArticleDto inboundArticleDto)
+    {
+        CreateNewArticle(inboundArticleDto.Title, inboundArticleDto.SubTitle, inboundArticleDto.Body);
     }
 
     public IEnumerable<ArticleDto> GetAllArticles()
