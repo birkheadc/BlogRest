@@ -9,5 +9,6 @@ public interface IArticleRepository
     public IEnumerable<Article> FindAll();
     public void Add(Article article);
     public IEnumerable<ArticleProfileDto> FindAllArticleProfiles();
+    public IEnumerable<ArticleProfileDto> FindNRecentProfiles(int n);
     public Article FindByTitle(string title);
 }

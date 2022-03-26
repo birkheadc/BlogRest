@@ -50,6 +50,14 @@ public class ArticleController : ControllerBase
         IEnumerable<ArticleProfileDto> profiles = articleService.GetAllArticleProfiles();
         return Ok(profiles);
     }
+
+    [HttpGet]
+    [Route("profiles/recent/{n}")]
+    public IActionResult GetNRecentArticleProfiles(int n)
+    {
+        IEnumerable<ArticleProfileDto> profiles = articleService.GetNRecentArticleProfiles(n);
+        return Ok(profiles);
+    }
     
     [HttpPost]
     [ApiKeyAuth]

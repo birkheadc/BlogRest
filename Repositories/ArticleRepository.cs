@@ -30,6 +30,12 @@ public class ArticleRepository : IArticleRepository
         return profiles;
     }
 
+    public IEnumerable<ArticleProfileDto> FindNRecentProfiles(int n)
+    {
+        IEnumerable<ArticleProfileDto> profiles = context.FindNRecentProfiles(n);
+        return profiles;
+    }
+
     public Article FindByTitle(string title)
     {
         Article article = context.FindByTitle(title);

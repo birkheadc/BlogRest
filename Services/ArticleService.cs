@@ -54,6 +54,12 @@ public class ArticleService : IArticleService
         return profiles;
     }
 
+    public IEnumerable<ArticleProfileDto> GetNRecentArticleProfiles(int n)
+    {
+        IEnumerable<ArticleProfileDto> profiles = repository.FindNRecentProfiles(n);
+        return profiles;
+    }
+
     public ArticleDto GetArticleByTitle(string title)
     {
         try

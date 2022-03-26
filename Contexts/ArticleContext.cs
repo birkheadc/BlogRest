@@ -172,7 +172,32 @@ public class ArticleContext : IArticleContext
             MySqlCommand command = new();
             command.CommandText = "SELECT title, subtitle, post_date FROM " + tableName + " ORDER BY post_date DESC";
             command.Connection = connection;
-            Console.WriteLine("SELECT title, subtitle, post_date FROM " + tableName + " ORDER BY post_date DESC");
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    profiles.Add(GetArticleProfileFromReader(reader));
+                }
+            }
+
+            connection.Close();
+        }
+
+        return profiles;
+    }
+
+    public IEnumerable<ArticleProfileDto> FindNRecentProfiles(int n)
+    {
+        List<ArticleProfileDto> profiles = new();
+
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Parameters.AddWithValue("@n", n);
+            command.CommandText = "SELECT title, subtitle, post_date FROM " + tableName + " ORDER BY post_date DESC LIMIT @n";
+            command.Connection = connection;
             using (MySqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
