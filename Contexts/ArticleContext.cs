@@ -1,6 +1,9 @@
+using System.Net;
 using BlogRest.Dtos;
+using BlogRest.Exceptions;
 using BlogRest.Models;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 
 namespace BlogRest.Contexts;
@@ -119,12 +122,21 @@ public class ArticleContext : IArticleContext
         }
     }
 
-    public bool Add(Article article)
+    public void Add(Article article)
     {
+        if (string.IsNullOrWhiteSpace(article.Title))
+        {
+            throw new ArgumentException("Title cannot be whitespace or empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(article.Body))
+        {
+            throw new ArgumentException("Body cannot be whitespace or empty.");
+        }
         // Title is a unique field, so check if an article of the same title already exists.
         if (DoesArticleExistByTitle(article.Title) == true)
         {
-            return false;
+            throw new ArticleTitleExistsException("Title must be unique.");
         }
         
         using (MySqlConnection connection = GetConnection())
@@ -147,8 +159,6 @@ public class ArticleContext : IArticleContext
 
             connection.Close();
         }
-
-        return true;
     }
 
     public IEnumerable<ArticleProfileDto> FindAllArticleProfilesByPostDateDesc()

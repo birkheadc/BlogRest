@@ -9,7 +9,6 @@ public interface IArticleService
     public IEnumerable<ArticleDto> GetAllArticles();
     public IEnumerable<ArticleProfileDto> GetAllArticleProfiles();
     public void CreateNewArticle(string title, string subtitle, string body);
-    public void CreateNewArticle(ArticleDto dto);
     public void CreateNewArticle(Article article);
     public void CreateNewArticle(InboundArticleDto inboundArticleDto);
 

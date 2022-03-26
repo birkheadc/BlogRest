@@ -30,15 +30,8 @@ public class ArticleService : IArticleService
         CreateNewArticle(article);
     }
 
-    public void CreateNewArticle(ArticleDto dto)
-    {
-        Article article = converter.DtoToEntity(dto);
-        CreateNewArticle(article);
-    }
-
     public void CreateNewArticle(Article article)
     {
-        //TODO: Use some kind of validation.
         repository.Add(article);
     }
 

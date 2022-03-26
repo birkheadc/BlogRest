@@ -1,4 +1,7 @@
+using System.Net;
 using BlogRest.Dtos;
+using BlogRest.Exceptions;
+using BlogRest.Filters;
 using BlogRest.Models;
 using BlogRest.Repositories;
 using BlogRest.Services;
@@ -45,15 +48,28 @@ public class ArticleController : ControllerBase
     }
     
     [HttpPost]
+    [ApiKeyAuth]
     public IActionResult PostNewArticle([FromBody] InboundArticleDto inboundArticleDto)
     {
-        //TODO: Need to introduce some kind of validation system.
-        articleService.CreateNewArticle(inboundArticleDto);
-        return Ok();
+        try
+        {
+            articleService.CreateNewArticle(inboundArticleDto);
+        }
+        catch(ArticleTitleExistsException e)
+        {
+            return Conflict();
+        }
+        catch(ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+
+        return Ok("Article published successfully!");
     }
 
     [HttpPost]
     [Route("test")]
+    [ApiKeyAuth]
     public IActionResult AddTestArticles()
     {
         articleService.CreateTestArticles();
