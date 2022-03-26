@@ -31,12 +31,16 @@ public class ArticleController : ControllerBase
     [Route("title/{title}")]
     public IActionResult GetArticleByTitle(string title)
     {
-        ArticleDto article = articleService.GetArticleByTitle(title);
-        if (article == null)
+        try
+        {
+            ArticleDto article = articleService.GetArticleByTitle(title);
+            return Ok(article);
+        }
+        catch(FileNotFoundException e)
         {
             return NotFound();
         }
-        return Ok(article);
+        
     }
 
     [HttpGet]

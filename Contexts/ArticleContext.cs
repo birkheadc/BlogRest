@@ -205,7 +205,7 @@ public class ArticleContext : IArticleContext
                 if (reader.Read() == false)
                 {
                     connection.Close();
-                    return null;
+                    throw new FileNotFoundException();
                 }
                 article = GetArticleFromReader(reader);
             }
