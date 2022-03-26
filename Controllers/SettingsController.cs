@@ -14,7 +14,8 @@ public class SettingsController : ControllerBase
         this.service = service;
     }
 
-    [HttpGet("/{name}")]
+    [HttpGet]
+    [Route("{name}")]
     public IActionResult GetSettingByName(string name)
     {
         string value = service.GetSettingByName(name);
@@ -23,7 +24,7 @@ public class SettingsController : ControllerBase
         {
             return NotFound();
         }
-        
+
         return Ok(value);
     }
 }
