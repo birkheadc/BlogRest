@@ -15,8 +15,10 @@ public class ApiKeyAuthAttribute : Attribute, IAsyncActionFilter
             return;
         }
 
-        IConfiguration configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-        string apiKey = configuration.GetValue<string>("ApiKey");
+        // IConfiguration configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+        // string apiKey = configuration.GetValue<string>("ApiKey");
+            
+        string apiKey = GetApiKey();
 
         if (!apiKey.Equals(incomingApiKey))
         {
@@ -24,5 +26,12 @@ public class ApiKeyAuthAttribute : Attribute, IAsyncActionFilter
             return;
         }
         await next();
+    }
+
+    private string GetApiKey()
+    {
+        string apiKey = Environment.GetEnvironmentVariable("API_KEY") ?? "";
+        Console.WriteLine("API_KEY=" + apiKey);
+        return apiKey;
     }
 }

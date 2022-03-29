@@ -2,6 +2,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 WORKDIR /app
 EXPOSE 5000
 
+ARG API_KEY
+
+ENV API_KEY=${API_KEY}
+
 ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Staging
 

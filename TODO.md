@@ -1,0 +1,1 @@
+Hide api key in a argument given when building the docker container, so argument > docker-compose > dockerfile > environment variable.
