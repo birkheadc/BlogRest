@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlogRest.Controllers;
 
 [ApiController]
-[Route("articles")]
+[Route("api/articles")]
 public class ArticleController : ControllerBase
 {
     private readonly IArticleService articleService;

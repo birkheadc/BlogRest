@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlogRest.Controllers;
 
 [ApiController]
-[Route("debug")]
+[Route("api/debug")]
 public class DebugController : ControllerBase
 {
     private readonly IConfiguration configuration;

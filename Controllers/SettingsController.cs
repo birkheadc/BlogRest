@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlogRest.Controllers;
 
 [ApiController]
-[Route("settings")]
+[Route("api/settings")]
 public class SettingsController : ControllerBase
 {
     private readonly ISettingsService service;
